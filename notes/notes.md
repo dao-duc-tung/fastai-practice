@@ -3,16 +3,71 @@
 ## Problem Types
 
 - [Image Classification](https://nbviewer.jupyter.org/github/fastai/course-v3/blob/master/nbs/dl1/lesson1-pets.ipynb)
-  - cnn_learner
+  - Data: ImageDataBunch
+  - Learner: cnn_learner
 - [Multi-label Image Classification](https://nbviewer.jupyter.org/github/fastai/course-v3/blob/master/nbs/dl1/lesson3-planet.ipynb)
-  - cnn_learner
+  - Data:
+    - ImageFileList
+    - .from_folder
+    - .label_from_csv
+    - .random_split_by_pct
+    - .datasets
+    - .transform
+    - .databunch
+    - .normalize
+  - Learner: cnn_learner
 - [Image Segmentation](https://github.com/fastai/course-v3/blob/master/nbs/dl1/lesson3-camvid.ipynb)
-  - unet_learner
+  - Data:
+    - SegmentationItemList
+    - .from_folder
+    - .split_by_fname_file
+    - .label_from_func
+    - .transform
+    - .databunch
+    - .normalize
+  - Learner: unet_learner
 - [Regression](https://nbviewer.jupyter.org/github/fastai/course-v3/blob/master/nbs/dl1/lesson3-head-pose.ipynb)
-  - cnn_learner
+  - Data:
+    - ImageItemList
+    - .from_folder
+    - .split_by_valid_func
+    - .label_from_func
+    - .transform
+    - .databunch
+    - .normalize
+  - Learner: cnn_learner
 - [Natural Language Processing](https://nbviewer.jupyter.org/github/fastai/course-v3/blob/master/nbs/dl1/lesson3-imdb.ipynb)
-  - language_model_learner (train encoder)
-  - text_classifier_learner (train text classifier)
+  - Data:
+    - TextList
+    - .from_folder
+    - .filter_by_folder
+    - .split_by_rand_pct
+    - .label_for_lm
+    - .databunch
+  - Learner: language_model_learner (train encoder)
+  - Data:
+    - TextList
+    - .from_folder
+    - .split_by_folder
+    - .label_from_folder
+    - .databunch
+  - Learner: text_classifier_learner (train text classifier)
+- [Tabular](https://nbviewer.jupyter.org/github/fastai/course-v3/blob/master/nbs/dl1/lesson4-tabular.ipynb)
+  - Data:
+    - TabularList
+    - .from_df
+    - .split_by_idx
+    - .label_from_df
+    - .add_test
+    - .databunch
+  - Learner: tabular_learner
+  - People often use logistic regression, random forests, or gradient bossting machine for tabular data.
+  But using neural nets nowadays tends to be reliable and effective.
+- [Collaborative Filtering](https://nbviewer.jupyter.org/github/fastai/course-v3/blob/master/nbs/dl1/lesson4-collab.ipynb)
+  - Data:
+    - CollabDataBunch
+    - .from_df
+  - Learner: collab_learner
 
 ## Cleaning Data
 
@@ -31,7 +86,8 @@
 
 ## How (and why) to create a good validation set
 
-https://www.fast.ai/2017/11/13/validation-sets/
+- https://www.fast.ai/2017/11/13/validation-sets/
+- [**TRICK**] Train set = Train + Valid set (in Kaggle)
 
 ## Batch size for Image Segmentation problem | Free memory
 
@@ -71,9 +127,61 @@ in 16-bit floating point instead of 32-bit. Less precise but better result and f
 - CPU can do lots of things at the same time, but not GPU.
 - Use PythonAnyWhere, Zeit, Render.com for free hosting
 
+## Back Propagation
+
+```python
+# update param by substracting it from
+# product of its gradient and learning rate
+param -= (lr * param.grad())
+```
+
+## Neural Network | Architecture
+
+![](images/19.png)
+
+- Yellow: `Parameters`: Number that are stored to make a calculation. Ex: Numbers inside matrixes
+- Purple & Blue: `Activations`: Result of a calculation, numbers that are calculated.
+Ex: result of a matrix multiply or an activation function (ReLU's output)
+- Red Arrows: `Layers`: Things that do a calculation.
+There're 2 types of layers (except input/output layers):
+  - Yellow: Layers contain params
+  - Blue: Layers contain activations
+- `ReLU`: an activation function.
+
+## Embedding
+
+![](images/14.png)
+
+- Is a matrix of weights
+- In this case, we have an embedding matrix for a user and an embedding matrix for a movie.
+
+## Bias
+
+![](images/14.png)
+
+- In Collaborative Filtering system, maybe there are certain movies that everybody likes more.
+Maybe there are some users that just tend to like movies more.
+So I want to add a single number of like how popular is this movie,
+and add a single number of like how much does this user like movies in general. So those are called `bias` terms.
+We don't just want to have prediction equals dot product of these two things,
+we want to say it's the dot product of those two things plus a bias term for a movie plus a bias term for user ID.
+
+## Cold Start Problem in collaborative filtering | Recommendation System
+
+- Recommend movies for a new user, or recommend a new movie for users.
+At this point, we don't have any data in our collaborative filtering system.
+- Solution 1: Ask user about some movies if he likes it
+- Solution 2: Have a second model which is NOT a collaborative filtering model
+but a METADATA driven model for new users or new movies.
+Ex: If you're selling products and you don't want to show them a big selection
+of your products and say did you like this because you just want them to buy.
+You can instead try and use a metadata based tabular model what geography did they come from,
+their age and sex, you can try and make some guesses about the initial recommendations.
+
 ## Encoder
 
 - Encoder in NLP model is responsible for creating, updating hidden states (understand sentences)
+- Encoder is the first half of NLP model. The second half is all about prediting the next word.
 
 ## Mini-batches
 
@@ -121,6 +229,10 @@ This penalizes incorrect confident predictions, and correct unconfident predicti
 - In this case:
 - Min LR = (Be4 it shoots up = 1e-4)/10 = 1e-5
 - Max LR = (LR at frozon)/5
+
+## Activation function
+
+- Is an element-wise function. It does calculation on every elements.
 
 ## Loss function: Mean Squared Error
 
