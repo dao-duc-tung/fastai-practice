@@ -32,6 +32,10 @@ else:           bs=1
 - https://www.fast.ai/2017/11/13/validation-sets/
 - [**TRICK**] Train set = Train + Valid set (in Kaggle)
 
+## Labeling Data
+
+- Use platform.ai for auto labeling
+
 ## Unbalanced data
 
 - 200 black bears, 50 teddies? -> It still works!
@@ -40,7 +44,8 @@ else:           bs=1
 
 ## Problem Types
 
-- [Image Classification](https://nbviewer.jupyter.org/github/fastai/course-v3/blob/master/nbs/dl1/lesson1-pets.ipynb)
+- [Image Classification 1](https://nbviewer.jupyter.org/github/fastai/course-v3/blob/master/nbs/dl1/lesson1-pets.ipynb);
+[Image Classification 2](https://nbviewer.jupyter.org/github/fastai/course-v3/blob/master/nbs/dl1/lesson6-pets-more.ipynb)
   - Data: ImageDataBunch
   - Learner: cnn_learner
 - [Multi-label Image Classification](https://nbviewer.jupyter.org/github/fastai/course-v3/blob/master/nbs/dl1/lesson3-planet.ipynb)
@@ -90,7 +95,9 @@ else:           bs=1
     - .label_from_folder
     - .databunch
   - Learner: text_classifier_learner (train text classifier)
-- [Tabular](https://nbviewer.jupyter.org/github/fastai/course-v3/blob/master/nbs/dl1/lesson4-tabular.ipynb)
+- [Tabular 1](https://nbviewer.jupyter.org/github/fastai/course-v3/blob/master/nbs/dl1/lesson4-tabular.ipynb);
+[Tabular 2](https://nbviewer.jupyter.org/github/fastai/course-v3/blob/master/nbs/dl1/lesson6-rossmann.ipynb);
+[Tabular 3](https://nbviewer.jupyter.org/github/fastai/course-v3/blob/master/nbs/dl1/rossman_data_clean.ipynb)
   - Data:
     - TabularList
     - .from_df
@@ -99,8 +106,8 @@ else:           bs=1
     - .add_test
     - .databunch
   - Learner: tabular_learner
-  - People often use logistic regression, random forests, or gradient bossting machine for tabular data.
-  But using neural nets nowadays tends to be reliable and effective.
+  - People often use logistic regression, random forests, or gradient bossting machine for
+  tabular data. But using neural nets nowadays tends to be reliable and effective.
 - [Collaborative Filtering](https://nbviewer.jupyter.org/github/fastai/course-v3/blob/master/nbs/dl1/lesson4-collab.ipynb)
   - Data:
     - CollabDataBunch
@@ -116,16 +123,22 @@ Because LR starts low, goes up, and then goes down.
 Ex: weight decay, dropout, data augmentation, ...
 - [**TRICK**] Make a lot of smaller datasets to step up from in tuning.
 Ex: 64x64, 128x128, 256x256, ...
-- [**TRICK**] U-Net is suitable for segmentation problem,
-especially for Biomedical image segmentation.
 - [**TRICK**] Create learner using `.to_fp16()` method for computing
 in 16-bit floating point instead of 32-bit. Less precise but better result and faster training.
+- [**TRICK**] We will want some Weight Decay, and a bit of Dropout. Just try, no one knows!
+- [**TRICK**] U-Net is suitable for segmentation problem,
+especially for Biomedical image segmentation.
+- [**TRICK**] Use [add_datepart function](https://youtu.be/U7c-nYXrKD4) for tabular problem.
+- [**TRICK**] Use `log=True`: Anytime you're trying to predict sth like a population or
+a dollar amount of sales, these kind of things tend to have long tail distributions where you care
+more about percentage differences and exact/absolute differences. So you want to use `log=True`
+to measure root mean squared percent error.
 
 ## Activation function
 
 - Is an element-wise function. It does calculation on every elements.
 
-## Adam - Do both momentum and RMSProp
+## Adam Optimizer - Do both momentum and RMSProp
 
 - These optimizes are called **Dynamic Learning Rate**.
 
@@ -147,6 +160,15 @@ Ex: When LR is small, momentum is large.
 # product of its gradient and learning rate
 param -= (lr * param.grad())
 ```
+
+## Batch Normalization
+
+- We have: <img src="https://latex.codecogs.com/gif.latex?\hat{y}=f(w_{1},&space;...,&space;w_{1000000},&space;\vec{x})" title="\hat{y}=f(w_{1}, ..., w_{1000000}, \vec{x})" />
+  - <img src="https://latex.codecogs.com/gif.latex?\hat{y}" title="\hat{y}" /> is predictions,
+  <img src="https://latex.codecogs.com/gif.latex?\vec{x}" title="\vec{x}" /> is inputs.
+- With BN, we have <img src="https://latex.codecogs.com/gif.latex?\hat{y}=f(w_{1},&space;...,&space;w_{1000000},&space;\vec{x})\times&space;g+b" title="\hat{y}=f(w_{1}, ..., w_{1000000}, \vec{x}) \times g + b" />
+- BN shifts outputs up and down, in and out (`g` and `b` are learned params).
+- We definitely want to use it! It accelerates training (less training steps).
 
 ## Bias
 
@@ -185,6 +207,16 @@ else: return -log(1 - y_hat)
 - MSE is not good when we need sth where predicting the right thing correctly and confidently
 should have very little loss; predicting the wrong thing confidently should have a lot of loss.
 Ex: `mse(4,3)` is still small --> it should be big!
+
+## Dropout
+
+- Everytime we have a mini batch going through, we randomly throw away some of the activations.
+We throw each one away with probability `p` (default `p=0.5`). Then the next mini batch, we put
+them back and throw away some different ones --> No activation can memorize some part of input!
+- If we overfit, some part of model is learning to recognize a particular image rather than
+a feature in general.
+- Ex: `ps=[0.001, 0.01]`: 0.001 is dropout of 1st layer, 0.01 is for next layer.
+- Ex: `emb_drop=0.04`: special dropout for embedding layer.
 
 ## Embedding
 
@@ -266,10 +298,12 @@ def mse(y_hat, y): return ((y_hat-y)**2).mean()
 
 ## Mini-batches
 
-- The only difference between stochastic gradient descent and gradient descent is something called mini-batches.
+- The only difference between stochastic gradient descent and gradient descent is
+something called mini-batches.
 - We calculated the value of the loss on the whole dataset on every iteration.
 But if your dataset is 1.5 million images in ImageNet, that's going to be really slow.
-- What we do is we grab 64 images or so at a time at random, and we calculate the loss on those 64 images, and we update our weights.
+- What we do is we grab 64 images or so at a time at random, and we calculate the loss
+on those 64 images, and we update our weights.
 - Mini-batches: A random bunch of points that you use to update your weights
 
 ## Momentum - Keep track of EWMA of step
@@ -389,6 +423,7 @@ by adding lots of weight decay and it's just not training very well.
 
 - Use sigmoid to make result in (0, 1)
 - User y_range=[0, 5.5] because there's movie with 5 stars, but sigmoid never get to 5.
+  - [**TRICK**] Make Y Range wider than range of data
 
 # Code Notes
 
