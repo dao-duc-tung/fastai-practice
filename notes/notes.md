@@ -49,7 +49,7 @@ else:           bs=1
   - Init random seed
   - Create databunch and normalize
     - Use small input size first
-  - show_batch and check classes
+  - Check train_ds, valid_ds, classes and show_batch
 - Train
   - Create learner and check model
   - Train last layer (when freezing)
