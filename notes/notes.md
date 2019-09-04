@@ -113,6 +113,14 @@ else:           bs=1
     - CollabDataBunch
     - .from_df
   - Learner: collab_learner
+- [Image Restoration with GAN](https://nbviewer.jupyter.org/github/fastai/course-v3/blob/master/nbs/dl1/lesson7-superres-gan.ipynb);
+[Image Restoration with WGAN](https://nbviewer.jupyter.org/github/fastai/course-v3/blob/master/nbs/dl1/lesson7-wgan.ipynb);
+[Image Restoration with Feature Loss](https://nbviewer.jupyter.org/github/fastai/course-v3/blob/master/nbs/dl1/lesson7-superres.ipynb);
+  - Low res --> high res
+  - Black-and-white --> color
+  - Cut out --> replace the cutout
+  - Turn image into what looks like a line drawing
+  - Turn image into what looks like Monet painting
 
 ## Statements
 - Training Loss should be ALWAYS < Validation Loss
@@ -208,6 +216,18 @@ else: return -log(1 - y_hat)
 should have very little loss; predicting the wrong thing confidently should have a lot of loss.
 Ex: `mse(4,3)` is still small --> it should be big!
 
+## DenseNet
+
+![](images/13(1).png)
+
+- Instead of `x+Conv2(Conv1(x))`, it goes `cat[x,Conv2(Conv1(x))]`. In other words,
+rather than putting a plus in this connection, it does a concatenate.
+- Dense block is getting bigger and bigger. Note that the exact input is still here. DenseNet is
+memory intensive. But they have very few params.
+- They tend to work really well on small datasets and for segmentation problems (because they
+keep the original input pixels and in segmentation, you want to be able to reconstruct
+original resolution of picture).
+
 ## Dropout
 
 - Everytime we have a mini batch going through, we randomly throw away some of the activations.
@@ -229,6 +249,37 @@ a feature in general.
 
 - Encoder in NLP model is responsible for creating, updating hidden states (understand sentences)
 - Encoder is the first half of NLP model. The second half is all about prediting the next word.
+
+## Feature Loss | Perceptual Loss
+
+![](images/32.png)
+
+- "Can we get rid of GANs entirely?" --> We want a better loss function that can say
+this is a high-quality image without having to go all the GAN trouble.
+- The generator is called the "image transform net". It's got U-Net shaped.
+At the time this came out, nobody in the machine learning world knew about U-Nets.
+- We take the prediction and we put it through a pre-trained ImageNet network.
+At the time that this came out, the pre-trained ImageNet network they were using was VGG.
+It's kind of old now, but people still tend to use it because it works fine for this process.
+It doesn't matter too much which one it is.
+- Normally, the output would tell you "is this generated thing a dog, or a fire engine or whatever?"
+But in the process of getting to that final classification,
+it goes through lots of different layers. In this case, they've color-coded all the layers with
+the same grid size and the feature map with the same color.
+- Let's not take the final output of the VGG model, but let's take the activations of
+some layer in the middle. Those activations, it might be a feature map of like 256 channels
+by 28 by 28. So those kind of 28 by 28 grid cells will roughly semantically say things like
+"in this part of that 28 by 28 grid, is there something that looks kind of furry? Or is there
+something that was kind of circular? Is there something that kind of looks like an eyeball?"
+- We take the target (i.e. the actual `y` value) and put it through the same pre-trained
+VGG network, and pull out the activations of the same layer. Then we do a mean square error
+comparison. So it'll say "in the real image, grid cell (1, 1) of that 28 by 28 feature map is
+furry and blue and round shaped. And in the generated image, it's furry and blue and
+not round shape." So it's an okay match.
+- The feature map is going to say "there's eyeballs here (in the target), but there isn't here
+(in the generated version), so do a better job of that please. Make better eyeballs."
+That's what we call `feature losses` or Johnson et al. called `perceptual losses`.
+- [Link](https://nbviewer.jupyter.org/github/fastai/course-v3/blob/master/nbs/dl1/lesson7-superres.ipynb)
 
 ## Find Learning Rate
 
@@ -259,6 +310,29 @@ what looks best.
 - In this case:
 - Min LR = (Be4 it shoots up = 1e-4)/10 = 1e-5
 - Max LR = (LR at frozon)/5
+
+## Generative Adversarial Network | GAN
+
+![](images/28.png)
+
+- We've got our crappy image, and we train a generator. `Generator` is a model which generates a restored image (in image restoration problem). We have a high-res image (target) and we can compare the high-res image to the prediction with pixel MSE.
+- We train another model which is called either the `discriminator` or the `critic`. We build a `binary classification` model that takes all the pairs of the generated image and the real high-res image, and learn to classify which is which. We fine tune the generator and the loss function is
+the `critic`.
+- We train generator a few batches. But the critic isn't that great.
+After we train the generator a little bit more using that critic as the loss function,
+the generators going to get really good at falling the critic.
+Now we'll train the critic some more on these newly generated images. Once we've done that and
+the critic is now good at recognizing the difference between the better generated images and
+the originals, we'll fine tune the generator some more using the better discriminator
+as the loss function.
+- So we'll just go ping pong ping pong, backwards and forwards. That's a GAN.
+That's our version of GAN. We've created a new version of GAN which is kind of a lot like
+the original GANs but we have this neat trick where we pre-train the generator and we pre-train
+the critic.
+- [**TRICK**] GANs hate momentum. It doesn't make sense to train them with momentum
+because you keep switching between generator and critic. Maybe there are ways to use momentum,
+but I'm not sure anybody's figured it out. When you create an Adam optimizer is where the momentum
+goes, so you should set that to zero ([link](https://nbviewer.jupyter.org/github/fastai/course-v3/blob/master/nbs/dl1/lesson7-superres-gan.ipynb))
 
 ## Latent factor | Latent feature
 
@@ -351,10 +425,70 @@ There're 2 types of layers (except input/output layers):
 - CPU can do lots of things at the same time, but not GPU.
 - Use PythonAnyWhere, Zeit, Render.com for free hosting
 
+## Recurrent Neural Network | RNN
+
+![](images/48(1).png)
+
+- We want to predict word 4 using words 1 and 2 and 3.
+  - Rectangle to circle: do an embedding (matrix multiply where you have a one hot encoded input)
+  - Circle to circle: take one piece of hidden state (ex: activations) and turning it into
+  another set of activations by saying we're now at the next word.
+  - Circle to triangle: convert the hidden state (ex: these activations) into an output.
+- Each of the same color arrows should use the same weight matrix because it's doing the same thing.
+Why would you have a different set of embeddings for each word or a different matrix to multiply
+by to go from this hidden state to this hidden state versus this one?
+
+![](images/49.png)
+
+- In the `forward`, we take input x[0], put it through input to hidden `i_h` (the green arrow),
+create first set of activations `h`. Assuming that there is a second word, because sometimes
+we might be at the end of a batch where there isn't a second word. We add x[1] to h,
+the result of x[1] put through the green arrow `i_h`. Our new `h` is the result
+of those two added together, put through our hidden to hidden `h_h` (orange arrow), and then
+ReLU then batch norm. Then for the third word, do exactly the same thing.
+Then finally blue arrow - put it through `h_o`.
+
+![](images/50(1).png)
+
+- This is the same diagram, we refactor into a loop. That's an RNN. An RNN is just a refactoring.
+- We are comparing the result of our model to just the last word of the sequence.
+It is very wasteful, because there's a lot of words in the sequence. So let's compare every word
+in `x` to every word and `y`. To do that, we need to change the diagram so it's not just one triangle
+at the end of the loop, but the triangle is inside the loop, like this:
+
+![](images/52.png)
+
+- One more thing you could do is at the end of your every loop, you could not just spit out
+an output, but you could spit it out into another RNN. So you have an RNN going into an RNN:
+
+![](images/54.png)
+
+- But think about it without the loop. It looks like this:
+
+![](images/55.png)
+
+- It keeps on going, and we've got a BPTT (back prop through time) of 20, so there's 20 layers
+of this. When you start creating long timescales and multiple layers, these things get impossible
+to train. One thing is you can add skip connections. But what people normally do is they actually
+use a little mini neural net to decide how much of the green and orange arrow to keep. You get
+GRU or LSTM depending on the details of that little neural net. This is a super valuable technique.
+
 ## RMSProp - Keep track of EWMA of the gradient squared
 
 - We have: <img src="https://latex.codecogs.com/gif.latex?w_{t}=w_{t-1}-&space;lr\times&space;\frac{dL}{d_{w_{t-1}}}\times&space;\frac{1}{\sqrt{R_{t-1}}}" title="w_{t}=w_{t-1}- lr\times \frac{dL}{d_{w_{t-1}}}\times \frac{1}{\sqrt{R_{t-1}}}" />
   - With: <img src="https://latex.codecogs.com/gif.latex?R_{t-1}=\bigg(\frac{dL}{d_{w_{t}}}\bigg)^2\times&space;\alpha+&space;(1-\alpha)\times&space;R_{t-2}" title="R_{t-1}=\bigg(\frac{dL}{d_{w_{t}}}\bigg)^2\times \alpha+ (1-\alpha)\times R_{t-2}" />
+
+## Skip Connection | Identity connection | ResNet Block | ResBlock
+
+![](images/8.png)
+
+- We want to create a deeper network by adding a stride 1 conv after every stride 2 conv, because
+stride 1 conv doesn't change the feature map size --> It will have many layers --> Overfit.
+- We expect its training error zip down to 0 quickly --> No, it worse!
+- Solution: Every 2 convolutions, we add together input to those 2 convolutions with their result.
+This should be at least as good as the original network.
+- Instead of this <img src="https://latex.codecogs.com/gif.latex?Output=Conv2(Conv1(x))" title="Output=Conv2(Conv1(x))" />
+  - we have: <img src="https://latex.codecogs.com/gif.latex?Output=x&plus;Conv2(Conv1(x))" title="Output=x+Conv2(Conv1(x))" />
 
 ## Softmax - Activation function
 
@@ -394,11 +528,37 @@ cross-entropy loss.
 
 ![](images/40.png)
 
+## U-Net
+
+![](images/23.png)
+
+- We can use nearest neighbor interpolation, bilinear interpolation for up-conv (the right part).
+- fastai uses `sub pixel convolutions` or `pixel shuffle` for up-conv.
+- At the bottom of U-Net, how the heck is it going to have enough information to reconstruct a
+572x572 output space? --> Tough Ask!
+  - Add skip connection?
+  - Actually they append/concatenate --> Use DenseNet
+  - So many computations are on the top
+- Moreover, we replace the left part/the downsampling part/the encoder part (the upsampling part is
+the decoder part) with ResNet34 - Replace old architecture with ResNet34.
+- U-Nets are for when the size of output is similar to the size of input and kind of
+aligned with it. Ex: segmentation, not classifier (for classifier, you just want to downsampling
+the input).
+
 ## Universal Approximation Theorem
 
 - If we have enough weight matrixes, it can solve any arbitrarily complex mathematical function
 to any arbitrarily high level of accuracy (assuming we can train params in terms of time and
 data availability...)
+
+## Wasserstein GAN
+
+![](images/wasserstein-GAN.png)
+
+- Input is this LSUN bedrooms dataset. The input to the generator isn't an image that we clean up.
+We feed to the generator random noise. Then the generator's task is "can you turn random noise
+into something which the critic can't tell the difference between that output and a real bedroom?" -
+[link](https://nbviewer.jupyter.org/github/fastai/course-v3/blob/master/nbs/dl1/lesson7-wgan.ipynb)
 
 ## Weight Decay - Penalize the complexity of model
 
