@@ -42,6 +42,41 @@ else:           bs=1
 
 # Training Notes
 
+## Training Flow
+
+- Data: [Ex 1](https://nbviewer.jupyter.org/github/fastai/course-v3/blob/master/nbs/dl1/lesson1-pets.ipynb)
+  - Check path.ls() and images name
+  - Init random seed
+  - Create databunch and normalize
+    - Use small input size first
+  - show_batch and check classes
+- Train
+  - Create learner and check model
+  - Train last layer (when freezing)
+    - Find LR, train and check result
+  - Train the whole model (when unfreezing)
+    - Find LR, train and check result
+- Improve and Trick
+  - Data
+    - Clean dataset by using FileDeleter (for images)
+    - Increase input size
+    - [Augmentate data](https://docs.fast.ai/vision.transform.html#List-of-transforms)
+    - Combine train and valid set to create train set (Kaggle)
+  - Create new learner
+    - Use more complex model
+    - Use [weight decay](https://github.com/hiromis/notes/blob/master/Lesson5.md)
+    - Use [dropout](https://github.com/hiromis/notes/blob/master/Lesson6.md)
+    - Use [.to_fp16()](https://nbviewer.jupyter.org/github/fastai/course-v3/blob/master/nbs/dl1/lesson3-camvid.ipynb)
+    - Use [ResBlock or DenseNet](https://github.com/hiromis/notes/blob/master/Lesson7.md)
+    - Use [Batch Normalization](https://github.com/hiromis/notes/blob/master/Lesson6.md) (default in fastai)
+  - Train last layer (when freezing)
+    - [Freeze model](https://nbviewer.jupyter.org/github/fastai/course-v3/blob/master/nbs/dl1/lesson3-planet.ipynb)
+    - Find LR, train and check result
+    - Use [momentum]((https://github.com/hiromis/notes/blob/master/Lesson5.md))
+  - Train the whole model (when unfreezing)
+    - Find LR, train and check result
+    - Use momentum
+
 ## Problem Types
 
 - [Image Classification 1](https://nbviewer.jupyter.org/github/fastai/course-v3/blob/master/nbs/dl1/lesson1-pets.ipynb);
