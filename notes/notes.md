@@ -444,6 +444,12 @@ There're 2 types of layers (except input/output layers):
 
 - Numbers that you are updating.
 
+## PCA - Principal Components Analysis
+
+- There isn't really conceptually `n` latent factors in a model. We want to squish `n` (ex: 40) down
+to just `m` (ex: 3). PCA is a simple linear transformation that takes an input matrix and
+tries to find a smaller number of columns that cover a lot of the space of that original matrix.
+
 ## plot_losses in fastai | plot losses
 
 ![](images/50.png)
