@@ -1,3 +1,5 @@
+## [Simple answer of How Deep Learning works?](https://youtu.be/PW2HKkzdkKY?t=6747)
+
 # Data Notes
 
 ## Batch size for Image Segmentation problem | Free memory
