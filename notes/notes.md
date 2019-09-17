@@ -1,4 +1,7 @@
-[Tutorials](https://docs.fast.ai/tutorials.html)
+# Quick links
+
+- [Tutorials](https://docs.fast.ai/tutorials.html)
+- [Simple answer of How Deep Learning works?](https://youtu.be/PW2HKkzdkKY?t=6747)
 
 # Data Notes
 
