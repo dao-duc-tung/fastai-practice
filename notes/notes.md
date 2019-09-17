@@ -1,3 +1,5 @@
+[Tutorials](https://docs.fast.ai/tutorials.html)
+
 # Data Notes
 
 ## Batch size for Image Segmentation problem | Free memory
@@ -18,7 +20,7 @@ else:           bs=1
 
 ## Cleaning Data
 
-- Use FileDeleter to show the top loss images for verifying/deleting them.
+- Use FileDeleter/ImageCleaner to show the top loss images for verifying/deleting them.
 - After cleaning, retrain, it's normal if the model is 0.01% better.
 - It's fine, just make sure we don't have too much noise in dataset.
 
@@ -58,7 +60,7 @@ else:           bs=1
     - Find LR, train and check result
 - Improve and Trick
   - Data
-    - Clean dataset by using FileDeleter (for images)
+    - Clean dataset by using FileDeleter/ImageCleaner (for images)
     - Increase input size
     - [Augmentate data](https://docs.fast.ai/vision.transform.html#List-of-transforms)
     - Combine train and valid set to create train set (Kaggle)
@@ -316,7 +318,7 @@ not round shape." So it's an okay match.
 That's what we call `feature losses` or Johnson et al. called `perceptual losses`.
 - [Link](https://nbviewer.jupyter.org/github/fastai/course-v3/blob/master/nbs/dl1/lesson7-superres.ipynb)
 
-## Find Learning Rate
+## [Find Learning Rate](https://sgugger.github.io/how-do-you-find-a-good-learning-rate.html)
 
 - Sometimes the tricks to choose LR below don't work. We should try 10x less, 10x more and see
 what looks best.
@@ -440,6 +442,10 @@ There're 2 types of layers (except input/output layers):
   - Blue: Layers contain activations
 - `ReLU`: an activation function.
 
+## [Normalize](https://docs.fast.ai/vision.data.html#ImageDataBunch.normalize)
+
+- Normalize using mean and std of data <img src="https://latex.codecogs.com/gif.latex?\frac{x-mean}{std}" title="\frac{x-mean}{std}" />
+
 ## Parameters | Coefficients | Weights
 
 - Numbers that you are updating.
@@ -540,7 +546,7 @@ and cross-entropy as loss function, because these things go together in such fri
 - The `nn.CrossEntropyLoss` is not really just cross-entropy loss, it's actually `softmax` then
 cross-entropy loss.
 
-## Transfer Learning in FastAI
+## Transfer Learning in FastAI | Discriminative Learning Rate | one cycle
 
 ![](images/2.png)
 
@@ -558,7 +564,7 @@ cross-entropy loss.
   much training" --> We split out model into a few sections and give them different LRs.
   --> This process is called Using Discriminative Learning Rates.
   - In `fit`/`fit_one_cycle` function params, we put the LR as a number/slice(number)/ or
-  slice(number, number)
+  slice(number, number) (learn about one cycle [here](https://docs.fast.ai/callbacks.one_cycle.html#What-is-1cycle?))
     - Number: every layer get the same LR --> not using discriminative LRs
     - slice(Number): the final layers get Number, the others get Number/3
     - slice(Num1, Num2): the 1st group of layers get Num1, second get (Num1+Num2)/2, third get Num2.
