@@ -2,6 +2,8 @@
 
 - [Tutorials](https://docs.fast.ai/tutorials.html)
 - [Simple answer of How Deep Learning works?](https://youtu.be/PW2HKkzdkKY?t=6747)
+- [Neural net from scratch](https://youtu.be/uQtTwhpv7Ew?t=5039)
+- [Convolutional Neural Network - CNN Explaination](https://youtu.be/U7c-nYXrKD4?t=3914)
 
 # Data Notes
 
