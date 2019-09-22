@@ -7,7 +7,7 @@
 
 # Data Notes
 
-## Batch size for Image Segmentation problem | Free memory
+## Batch size for Image Segmentation problem | Check Free memory
 
 ```python
 size = src_size//2
@@ -412,6 +412,13 @@ This penalizes incorrect confident predictions, and correct unconfident predicti
 def mse(y_hat, y): return ((y_hat-y)**2).mean()
 ```
 
+## Memory Freeing
+
+```python
+learn = None
+gc.collect()
+```
+
 ## Mini-batches
 
 - The only difference between stochastic gradient descent and gradient descent is
@@ -510,6 +517,43 @@ at the end of the loop, but the triangle is inside the loop, like this:
 
 ![](images/52.png)
 
+- Previously we had 46%, now we have 40%. It's worse because now when we're trying to predict
+the second word, we have one word of state to use. When we're looking at the third word,
+we have two words of state to use. It's a much harder problem. The key problem is here:
+
+![](images/53.png)
+
+- `h = torch.zeros` will **reset the state to zero every time we start another BPTT sequence**.
+Let's not do that and keep `h`. Because remember, **each batch connects to the previous batch**.
+It's not shuffled like happens in image classification. Let's take this exact model and
+replicate it again, but let's move the creation of `h` into the constructor.
+
+```python
+class Model3(nn.Module):
+  def __init__(self):
+    super().__init__()
+    self.i_h = nn.Embedding(nv,nh)
+    self.h_h = nn.Linear(nh,nh)
+    self.h_o = nn.Linear(nh,nv)
+    self.bn = nn.BatchNorm1d(nh)
+    self.h = torch.zeros(x.shape[1], nh).cuda()
+
+  def forward(self, x):
+    res = []
+    h = self.h
+    for xi in x:
+      h = h + self.i_h(xi)
+      h = F.relu(self.h_h(h))
+      res.append(h)
+    self.h = h.detach()
+    res = torch.stack(res)
+    res = self.h_o(self.bn(res))
+    return res
+```
+
+- It's now `self.h`. This is now exactly the same code, but at the end, let's put the new `h`
+back into `self.h`. It's now doing the same thing, but **it's not throwing away that state**.
+
 - One more thing you could do is at the end of your every loop, you could not just spit out
 an output, but you could spit it out into another RNN. So you have an RNN going into an RNN:
 
@@ -520,7 +564,8 @@ an output, but you could spit it out into another RNN. So you have an RNN going 
 ![](images/55.png)
 
 - It keeps on going, and we've got a BPTT (back prop through time) of 20, so there's 20 layers
-of this. When you start creating long timescales and multiple layers, these things get impossible
+of this. We know that the loss landscapes in deep networks has awful bumpy loss surfaces.
+When you start creating long timescales and multiple layers, these things get impossible
 to train. One thing is you can add skip connections. But what people normally do is they actually
 use a little mini neural net to decide how much of the green and orange arrow to keep. You get
 GRU or LSTM depending on the details of that little neural net. This is a super valuable technique.
