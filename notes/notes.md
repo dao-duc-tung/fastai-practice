@@ -443,6 +443,7 @@ often has value of 0.9 --> <img src="https://latex.codecogs.com/gif.latex?\alpha
 
 ## Neural Network | Architecture
 
+![](images/18.png)
 ![](images/19.png)
 
 - Yellow: `Parameters`: Number that are stored to make a calculation. Ex: Numbers inside matrixes
