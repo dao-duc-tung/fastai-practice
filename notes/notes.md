@@ -204,6 +204,14 @@ Ex: When LR is small, momentum is large.
 - Is Matrix Multiplication (same)
 - Is Linear function
 
+## [Annealing](https://youtu.be/AcA8HAYh7IE?t=7202)
+
+- [Notebook 05_anneal](https://github.com/fastai/course-v3/blob/master/nbs/dl2/05_anneal.ipynb)
+
+## [AWD-LSTM](https://youtu.be/vnOpEwmtFJ8?t=6330)
+
+- [Notebook 12a_awd_lstm](https://github.com/fastai/course-v3/blob/master/nbs/dl2/12a_awd_lstm.ipynb)
+
 ## Back Propagation
 
 - Update weights matrixes/params
@@ -223,6 +231,18 @@ param -= (lr * param.grad())
 - BN shifts outputs up and down, in and out (`g` and `b` are learned params).
 - We definitely want to use it! It accelerates training (less training steps).
 
+## [Batch Norm | Layer Norm | Instance Norm | Group Norm]((https://youtu.be/HR0lt1hlR6U?t=6018))
+
+- [Notebook 07_batchnorm](https://github.com/fastai/course-v3/blob/master/nbs/dl2/07_batchnorm.ipynb)
+
+## [Batching | Text Data](https://youtu.be/vnOpEwmtFJ8?t=5565)
+
+- [Notebook 12_text](https://github.com/fastai/course-v3/blob/master/nbs/dl2/12_text.ipynb)
+
+## [Batching for Classification | Text Data](https://youtu.be/vnOpEwmtFJ8?t=5877)
+
+- [Notebook 12_text](https://github.com/fastai/course-v3/blob/master/nbs/dl2/12_text.ipynb)
+
 ## Bias
 
 ![](images/12.png)
@@ -238,6 +258,29 @@ it's the dot product of those two things plus a bias term for a movie plus a bia
 - Now each movie can have an overall "this is a great movie" vs "this isn't a great movie" or every
 user can have an overall "this user rates movie highly" or "this user doesn't rate movies highly".
 
+## [Broadcasting](https://www.youtube.com/watch?v=4u8FxNEDUeg&t=3110)
+
+- The term broadcasting describes how arrays with different shapes are treated during arithmetic
+operations. The term broadcasting was first used by Numpy.
+
+- From the Numpy Documentation:
+```
+The term broadcasting describes how numpy treats arrays with
+different shapes during arithmetic operations. Subject to certain
+constraints, the smaller array is “broadcast” across the larger
+array so that they have compatible shapes. Broadcasting provides a
+means of vectorizing array operations so that looping occurs in C
+instead of Python. It does this without making needless copies of
+data and usually leads to efficient algorithm implementations.
+```
+
+## Callback
+
+- [Lesson 9](https://youtu.be/AcA8HAYh7IE?t=5628)
+- [Notebook 04_callbacks](https://github.com/fastai/course-v3/blob/master/nbs/dl2/04_callbacks.ipynb)
+- [Lesson 10](https://youtu.be/HR0lt1hlR6U?t=432)
+- [Notebook 05a_foundations](https://github.com/fastai/course-v3/blob/master/nbs/dl2/05a_foundations.ipynb)
+
 ## Cold Start Problem in collaborative filtering | Recommendation System
 
 - Recommend movies for a new user, or recommend a new movie for users.
@@ -250,16 +293,44 @@ of your products and say did you like this because you just want them to buy.
 You can instead try and use a metadata based tabular model what geography did they come from,
 their age and sex, you can try and make some guesses about the initial recommendations.
 
-## Cross Entropy Loss function
+## [CNN Creating](https://www.youtube.com/watch?v=HR0lt1hlR6U&t=3641)
+
+- [Notebook 06_cuda_cnn_hooks_init](https://github.com/fastai/course-v3/blob/master/nbs/dl2/06_cuda_cnn_hooks_init.ipynb)
+
+## Covariance and correlation
+
+- Here is Covariance definition in Wikipedia: <img src="https://latex.codecogs.com/gif.latex?[(X-[X])(Y-[Y])]" title="[(X-[X])(Y-[Y])]" />
+- Or in more convenience way: <img src="https://latex.codecogs.com/gif.latex?[XY]-[X][Y]" title="[XY]-[X][Y]" />
+
+```python
+t = torch.tensor([1.,2.,4.,18])
+cov =((t-t.mean())*(v-v.mean())).mean() # wikipedia way
+cov = (t*v).mean() - t.mean()*v.mean() # more convenience way
+```
+
+## [Cross Entropy Loss]((https://www.youtube.com/watch?v=AcA8HAYh7IE&t=2081))
 
 ```python
 if y == 1: return -log(y_hat)
 else: return -log(1 - y_hat)
 ```
 
-- MSE is not good when we need sth where predicting the right thing correctly and confidently
-should have very little loss; predicting the wrong thing confidently should have a lot of loss.
-Ex: `mse(4,3)` is still small --> it should be big!
+- The `nn.CrossEntropyLoss` is not really just cross-entropy loss, it's actually `log of softmax`
+then cross-entropy loss.
+- The cross entropy loss for some target `x` and some prediction `p(x)` is given by:
+<img src="https://latex.codecogs.com/gif.latex?-\sum{x\text{ log }p(x)} = -log(p_i)" title="-\sum{x\text{ log }p(x)} = -log(p_i)" />
+
+## [CUDA - Put data into GPU](https://www.youtube.com/watch?v=HR0lt1hlR6U&t=3799)
+
+- [Notebook 06_cuda_cnn_hooks_init](https://github.com/fastai/course-v3/blob/master/nbs/dl2/06_cuda_cnn_hooks_init.ipynb)
+
+## [Data Augmentation Foundations](https://youtu.be/hPQKzsjTyyQ?t=6882)
+
+- [Notebook 10_augmentation](https://github.com/fastai/course-v3/blob/master/nbs/dl2/10_augmentation.ipynb)
+
+## [Data Block API Foundations](https://youtu.be/hPQKzsjTyyQ?t=600)
+
+- [Notebook 08_data_block](https://github.com/fastai/course-v3/blob/master/nbs/dl2/08_data_block.ipynb)
 
 ## DenseNet
 
@@ -331,6 +402,29 @@ That's what we call `feature losses` or Johnson et al. called `perceptual losses
 - Sometimes the tricks to choose LR below don't work. We should try 10x less, 10x more and see
 what looks best.
 
+## Find Learning Rate in fastai | [LR Finder](https://www.youtube.com/watch?v=HR0lt1hlR6U&t=3545)
+
+- [Notebook 05b_early_stopping](https://github.com/fastai/course-v3/blob/master/nbs/dl2/05b_early_stopping.ipynb)
+
+```python
+class LR_Find(Callback):
+  _order=1
+  def __init__(self, max_iter=100, min_lr=1e-6, max_lr=10):
+    self.max_iter,self.min_lr,self.max_lr = max_iter,min_lr,max_lr
+    self.best_loss = 1e9
+
+  def begin_batch(self):
+    if not self.in_train: return
+    pos = self.n_iter/self.max_iter
+    lr = self.min_lr * (self.max_lr/self.min_lr) ** pos
+    for pg in self.opt.param_groups: pg['lr'] = lr
+
+  def after_step(self):
+    if self.n_iter>=self.max_iter or self.loss>self.best_loss*10:
+      raise CancelTrainException()
+    if self.loss < self.best_loss: self.best_loss = self.loss
+```
+
 ## Find Learning Rate before unfreezing | freezing | frozen
 
 ![](images/n1.png)
@@ -356,6 +450,11 @@ what looks best.
 - Min LR = (Be4 it shoots up = 1e-4)/10 = 1e-5
 - Max LR = (LR at frozon)/5
 
+## [Generalized ReLU](https://www.youtube.com/watch?v=HR0lt1hlR6U&t=5390)
+
+- This is a trick to not waste 90% of our activations
+- [Notebook 06_cuda_cnn_hooks_init](https://github.com/fastai/course-v3/blob/master/nbs/dl2/06_cuda_cnn_hooks_init.ipynb)
+
 ## Generative Adversarial Network | GAN
 
 ![](images/28.png)
@@ -379,6 +478,46 @@ because you keep switching between generator and critic. Maybe there are ways to
 but I'm not sure anybody's figured it out. When you create an Adam optimizer is where the momentum
 goes, so you should set that to zero ([link](https://nbviewer.jupyter.org/github/fastai/course-v3/blob/master/nbs/dl1/lesson7-superres-gan.ipynb))
 
+## [Hooks](https://youtu.be/HR0lt1hlR6U?t=4345)
+
+- [Notebook 06_cuda_cnn_hooks_init](https://github.com/fastai/course-v3/blob/master/nbs/dl2/06_cuda_cnn_hooks_init.ipynb)
+
+## Initialization
+
+- [Why do we need a good init? - Notebook 02b_initializing](https://github.com/fastai/course-v3/blob/master/nbs/dl2/02b_initializing.ipynb)
+
+- Some approaches (paper):
+  - Understanding the difficulty of training deep feedforward neural networks
+  - Delving Deep into Rectifiers
+  - All You Need is a Good Init
+  - Exact solutions to the nonlinear dynamics of learning in deep linear neural networks
+  - Fixup Initialization
+  - Self-Normalizing Neural Networks
+
+- fastai recommendation for efficient weight init:
+```python
+def init_cnn_(m, f):
+  if isinstance(m, nn.Conv2d):
+    f(m.weight, a=0.1)
+    if getattr(m, 'bias', None) is not None: m.bias.data.zero_()
+  for l in m.children(): init_cnn_(l, f)
+
+def init_cnn(m, uniform=False):
+  f = init.kaiming_uniform_ if uniform else init.kaiming_normal_
+  init_cnn_(m, f)
+
+model = get_cnn_model(data, nfs, layer, **kwargs) # replace with any model
+init_cnn(model, uniform=uniform)
+```
+
+## [Label Smoothing](https://youtu.be/vnOpEwmtFJ8?t=1121)
+
+- Another regularization technique that's often used is label smoothing. It's designed to make the
+model a little bit less certain of it's decision by changing a little bit its target: instead of
+wanting to predict 1 for the correct class and 0 for all the others, we ask it to predict 1-ε for
+the correct class and ε for all the others, with ε a (small) positive number and N the number of classes.
+- [Notebook 10b_mixup_label_smoothing](https://github.com/fastai/course-v3/blob/master/nbs/dl2/10b_mixup_label_smoothing.ipynb)
+
 ## Latent factor | Latent feature
 
 - In collaborative filtering user&movie system, we multiply 2 matrixes.
@@ -390,6 +529,17 @@ with a good answer is if it figures out what the aspects of movie taste are and 
 features of movie are.
 - The underlying features are called latent features. They are hidden things. Once we train this
 neural net, they suddenly appear.
+
+## [Layerwise Sequential Unit Variance | LSUV](https://youtu.be/hPQKzsjTyyQ?t=235)
+
+- [Notebook 07a_lsuv](https://github.com/fastai/course-v3/blob/master/nbs/dl2/07a_lsuv.ipynb)
+- LSUV is particularly useful for more complex and deeper architectures that are hard to initialize to get unit variance at the last layer.
+
+## Learner Foundations
+
+- [Lesson 11](https://www.youtube.com/watch?v=hPQKzsjTyyQ&t=6571)
+- [Lesson 12](https://www.youtube.com/watch?v=vnOpEwmtFJ8&t=65)
+- [Notebook 09b_learner](https://github.com/fastai/course-v3/blob/master/nbs/dl2/09b_learner.ipynb)
 
 ## Logistic Regression Model
 
@@ -415,6 +565,10 @@ This penalizes incorrect confident predictions, and correct unconfident predicti
 def mse(y_hat, y): return ((y_hat-y)**2).mean()
 ```
 
+- MSE is not good when we need sth where predicting the right thing correctly and confidently
+should have very little loss; predicting the wrong thing confidently should have a lot of loss.
+Ex: `mse(4,3)` is still small --> it should be big!
+
 ## Memory Freeing
 
 ```python
@@ -431,6 +585,16 @@ But if your dataset is 1.5 million images in ImageNet, that's going to be really
 - What we do is we grab 64 images or so at a time at random, and we calculate the loss
 on those 64 images, and we update our weights.
 - Mini-batches: A random bunch of points that you use to update your weights
+
+## [Mixed Precision](https://youtu.be/vnOpEwmtFJ8?t=1318)
+
+- [Notebook 10c_fp16](https://github.com/fastai/course-v3/blob/master/nbs/dl2/10c_fp16.ipynb)
+
+## [Mixup](https://youtu.be/vnOpEwmtFJ8?t=226)
+
+- As the name kind of suggests, the authors of the mixup article propose to train the model on
+a mix of the pictures of the training set.
+- [Notebook 10b_mixup_label_smoothing](https://github.com/fastai/course-v3/blob/master/nbs/dl2/10b_mixup_label_smoothing.ipynb)
 
 ## Momentum - Keep track of EWMA of step
 
@@ -462,6 +626,14 @@ There're 2 types of layers (except input/output layers):
 
 - Normalize using mean and std of data <img src="https://latex.codecogs.com/gif.latex?\frac{x-mean}{std}" title="\frac{x-mean}{std}" />
 
+## [Numericalizing | Text Data](https://youtu.be/vnOpEwmtFJ8?t=5491)
+
+- [Notebook 12_text](https://github.com/fastai/course-v3/blob/master/nbs/dl2/12_text.ipynb)
+
+## [Optimizer Foundations](https://youtu.be/hPQKzsjTyyQ?t=3917)
+
+- [Notebook 09_optimizers](https://github.com/fastai/course-v3/blob/master/nbs/dl2/09_optimizers.ipynb)
+
 ## Parameters | Coefficients | Weights
 
 - Numbers that you are updating.
@@ -487,6 +659,10 @@ tries to find a smaller number of columns that cover a lot of the space of that 
 - Let CPU predict in production.
 - CPU can do lots of things at the same time, but not GPU.
 - Use PythonAnyWhere, Zeit, Render.com for free hosting
+
+## [Progress Bar](https://youtu.be/hPQKzsjTyyQ?t=6743)
+
+- [Notebook 09c_add_progress_bar](https://github.com/fastai/course-v3/blob/master/nbs/dl2/09c_add_progress_bar.ipynb)
 
 ## Recurrent Neural Network | RNN
 
@@ -591,14 +767,30 @@ This should be at least as good as the original network.
 - Instead of this <img src="https://latex.codecogs.com/gif.latex?Output=Conv2(Conv1(x))" title="Output=Conv2(Conv1(x))" />
   - we have: <img src="https://latex.codecogs.com/gif.latex?Output=x&plus;Conv2(Conv1(x))" title="Output=x+Conv2(Conv1(x))" />
 
+## [Small batch sizes problem](https://youtu.be/HR0lt1hlR6U?t=7304)
+
+- When we compute the statistics (mean and std) for a BatchNorm Layer on a small batch, it is
+possible that we get a standard deviation very close to 0. because there aren't many samples (the
+variance of one thing is 0. since it's equal to its mean). To solve this problem we introduce a
+Running BatchNorm that uses smoother running mean and variance for the mean and std.
+
+- [Notebook 07_batchnorm](https://github.com/fastai/course-v3/blob/master/nbs/dl2/07_batchnorm.ipynb)
+
 ## Softmax - Activation function
 
 - <img src="https://latex.codecogs.com/gif.latex?\sigma(z)_{i}=\frac{e^{z_{i}}}{\sum_{j=1}^{K}e^{z_{j}}}&space;\text{&space;for&space;}i=1...K\text{&space;and&space;}z=(z_{1}...z_{K})\in\mathbb{R}^K" title="\sigma(z)_{i}=\frac{e^{z_{i}}}{\sum_{j=1}^{K}e^{z_{j}}} \text{ for }i=1...K\text{ and }z=(z_{1}...z_{K})\in\mathbb{R}^K" />
 - When we do single-label multi-class classification, we want `softmax` as our activation function
 and cross-entropy as loss function, because these things go together in such friendly ways.
 `Pytorch` will do this for us.
-- The `nn.CrossEntropyLoss` is not really just cross-entropy loss, it's actually `softmax` then
-cross-entropy loss.
+- In practice, we need the log of `softmax` when we calculate the loss.
+
+## [Tokenizing | Text Data](https://youtu.be/vnOpEwmtFJ8?t=5070)
+
+- [Notebook 12_text](https://github.com/fastai/course-v3/blob/master/nbs/dl2/12_text.ipynb)
+
+## [Transfer Learning Foundations](https://youtu.be/vnOpEwmtFJ8?t=2920)
+
+- [Notebook 11a_transfer_learning](https://github.com/fastai/course-v3/blob/master/nbs/dl2/11a_transfer_learning.ipynb)
 
 ## Transfer Learning in FastAI | Discriminative Learning Rate | one cycle
 
@@ -624,6 +816,10 @@ cross-entropy loss.
     - slice(Num1, Num2): the 1st group of layers get Num1, second get (Num1+Num2)/2, third get Num2.
     By default, there're 3 groups: 3rd one is the new layers, 1st and 2nd ones are splitted half
     of the rest.
+
+## [ULMFit](https://youtu.be/vnOpEwmtFJ8?t=7459)
+
+- [Notebook 12c_ulmfit](https://github.com/fastai/course-v3/blob/master/nbs/dl2/12c_ulmfit.ipynb)
 
 ## Underfitting | Overfitting
 
@@ -652,6 +848,16 @@ the input).
 to any arbitrarily high level of accuracy (assuming we can train params in terms of time and
 data availability...)
 
+## Variance
+
+```python
+t = torch.tensor([1.,2.,4.,18])
+m = t.mean() # mean
+(t-m).pow(2).mean() # variance: It's a measure of how spread out the data is, and is particularly sensitive to outliers.
+(t-m).abs().mean() # mean absolute deviation: It isn't used nearly as much as it deserves to be, because mathematicians don't like how awkward it is to work with. But that shouldn't stop us, because we have computers and stuff
+(t-m).pow(2).mean().sqrt() # standard deviation: Since it's on the same kind of scale as the original data, it's generally more interpretable
+```
+
 ## Wasserstein GAN
 
 ![](images/wasserstein-GAN.png)
@@ -679,6 +885,14 @@ We can replace `wd` with `2wd` without loss of generality.
 moderately large sized models and avoid overfitting.
 - Sometimes, you might still find you don't have enough data in cases where you're not overfitting
 by adding lots of weight decay and it's just not training very well.
+
+## [WT103 - Pretraining](https://youtu.be/vnOpEwmtFJ8?t=7410)
+
+- [Notebook 12b_lm_pretrain](https://github.com/fastai/course-v3/blob/master/nbs/dl2/12b_lm_pretrain.ipynb)
+
+## [XResNet](https://youtu.be/vnOpEwmtFJ8?t=1681)
+
+- [Notebook 11_train_imagenette](https://github.com/fastai/course-v3/blob/master/nbs/dl2/11_train_imagenette.ipynb)
 
 ## Y Range in collaborative filtering
 
