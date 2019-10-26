@@ -51,38 +51,41 @@ else:           bs=1
 
 ## Training Flow
 
+1. Overfit: Create sth with way more capacity we need and no regularization
+(Validation will be getting worse)
+2. Reduce overfitting, try things below sequently:
+  - Get more data
+  - Do data augmentation
+  - Use generalizable architectures
+  - Add regularization (reduce the effective capacity of model, less good then 3 things above):
+  dropout, weight decay
+  - Reduce architecture complexity
+
 - Data: [Ex 1](https://nbviewer.jupyter.org/github/fastai/course-v3/blob/master/nbs/dl1/lesson1-pets.ipynb)
   - Check path.ls() and images name
   - Init random seed
   - Create databunch and normalize
-    - Use small input size first
   - Check train_ds, valid_ds, classes and show_batch
 - Train
   - Create learner and check model
   - Train last layer (when freezing)
-    - Find LR, train and check result
   - Train the whole model (when unfreezing)
-    - Find LR, train and check result
+  - Use another model, freeze again to train
+    - [Freeze model](https://nbviewer.jupyter.org/github/fastai/course-v3/blob/master/nbs/dl1/lesson3-planet.ipynb)
 - Improve and Trick
-  - Data
+  - Data augmentation
     - Clean dataset by using FileDeleter/ImageCleaner (for images)
-    - Increase input size
     - [Augmentate data](https://docs.fast.ai/vision.transform.html#List-of-transforms)
     - Combine train and valid set to create train set (Kaggle)
-  - Create new learner
-    - Use more complex model
+  - Regularization
     - Use [weight decay](https://github.com/hiromis/notes/blob/master/Lesson5.md)
     - Use [dropout](https://github.com/hiromis/notes/blob/master/Lesson6.md)
-    - Use [.to_fp16()](https://nbviewer.jupyter.org/github/fastai/course-v3/blob/master/nbs/dl1/lesson3-camvid.ipynb)
-    - Use [ResBlock or DenseNet](https://github.com/hiromis/notes/blob/master/Lesson7.md)
+  - Model architecture
     - Use [Batch Normalization](https://github.com/hiromis/notes/blob/master/Lesson6.md) (default in fastai)
-  - Train last layer (when freezing)
-    - [Freeze model](https://nbviewer.jupyter.org/github/fastai/course-v3/blob/master/nbs/dl1/lesson3-planet.ipynb)
-    - Find LR, train and check result
+    - Use [ResBlock or DenseNet](https://github.com/hiromis/notes/blob/master/Lesson7.md)
+  - Training
+    - Use [.to_fp16()](https://nbviewer.jupyter.org/github/fastai/course-v3/blob/master/nbs/dl1/lesson3-camvid.ipynb)
     - Use [momentum]((https://github.com/hiromis/notes/blob/master/Lesson5.md))
-  - Train the whole model (when unfreezing)
-    - Find LR, train and check result
-    - Use momentum
 
 ## Problem Types
 
