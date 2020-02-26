@@ -626,6 +626,14 @@ There're 2 types of layers (except input/output layers):
 
 - Normalize using mean and std of data <img src="https://latex.codecogs.com/gif.latex?\frac{x-mean}{std}" title="\frac{x-mean}{std}" />
 
+- If you’re using a pretrained model you need to use the same stats it was trained with.
+Imagine you're trying to classify different types of green frogs. If you were to use your own per-channel means from your dataset,
+you would end up converting them to a mean of zero, a standard deviation of one for each of your red, green, and blue channels.
+Which means they don't look like green frogs anymore. They now look like grey frogs. But ImageNet expects frogs to be green.
+So you need to normalize with the same stats that the ImageNet training people normalized with.
+Otherwise the unique characteristics of your dataset won't appear anymore﹣you've actually normalized them out in terms of
+the per-channel statistics. So you should always use the same stats that the model was trained with.
+
 ## [Numericalizing | Text Data](https://youtu.be/vnOpEwmtFJ8?t=5491)
 
 - [Notebook 12_text](https://github.com/fastai/course-v3/blob/master/nbs/dl2/12_text.ipynb)
@@ -842,11 +850,14 @@ the decoder part) with ResNet34 - Replace old architecture with ResNet34.
 aligned with it. Ex: segmentation, not classifier (for classifier, you just want to downsampling
 the input).
 
-## Universal Approximation Theorem
+## [Universal Approximation Theorem](https://youtu.be/PW2HKkzdkKY?t=6747)
 
-- If we have enough weight matrixes, it can solve any arbitrarily complex mathematical function
-to any arbitrarily high level of accuracy (assuming we can train params in terms of time and
-data availability...)
+- If you have stacks of linear functions and nonlinearities, the thing you end up with can approximate any function arbitrarily closely.
+So you just need to make sure that you have a big enough matrix to multiply by, or enough of them.
+If you have this function which is just a sequence of matrix multiplies and nonlinearities where the nonlinearities can be basically
+any of activation functions, and if that can approximate anything, then all you need is some way to find the particular values
+of the weight matrices in your matrix multiplies that solve the problem you want to solve.
+We already know how to find the values of parameters. We can use gradient descent.
 
 ## Variance
 
