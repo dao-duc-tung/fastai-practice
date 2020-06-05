@@ -168,21 +168,21 @@ else:           bs=1
   - Turn image into what looks like Monet painting
 
 ## Statements
-- The number of epochs is a parameter that you have to tune manually,
+- [**Number of epochs**] The number of epochs is a parameter that you have to tune manually,
 along with the Learning Rate. But while the choice of LR can be tricky and
 requires some experience (to correctly read the lr_find graph),
 there is less room for mistakes in the choice of the number of epochs.
-- Indeed, it is difficult to make your model overfit due to a too high number of epochs
+Indeed, it is difficult to make your model overfit due to a too high number of epochs
 (see Lesson 2 where Jeremy had to remove all regularization and data augmentation
 to get close to something looking like overfitting), so the worst that can happen
 by choosing a too high number of epochs is that you may loose your time
 (and money if you use cloud services), but it won’t hurt your models so much.
-- Again, fastai also supports Early Stopping, so maybe choose a high number of epochs
+Again, fastai also supports Early Stopping, so maybe choose a high number of epochs
 (say 100) for your different models and make them stop
 if the loss isn’t improving for a while, just in case 
-- As a rule of thumb is the best model the one with the lowest error_rate
+- [**Error rate**] As a rule of thumb is the best model the one with the lowest error_rate
 or the lowest valid_loss? Answered by Jeremy: Lowest error_rate
-- The only thing that tells you that you’re overfitting is that the error rate improves
+- [**Overfitting**] The only thing that tells you that you’re overfitting is that the error rate improves
 for a while and then starts getting worse again. You will see a lot of people, even people
 that claim to understand machine learning, tell you that if your training loss is lower
 than your validation loss, then you are overfitting. That is absolutely not true!
